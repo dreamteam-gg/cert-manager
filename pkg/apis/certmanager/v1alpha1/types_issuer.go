@@ -90,6 +90,9 @@ type IssuerConfig struct {
 
 	// +optional
 	Venafi *VenafiIssuer `json:"venafi,omitempty"`
+
+	// +optional
+	PrivateACM *PrivateACMIssuer `json:"privateACM,omitempty"`
 }
 
 // VenafiIssuer describes issuer configuration details for Venafi Cloud.
@@ -141,6 +144,13 @@ type VenafiCloud struct {
 }
 
 type SelfSignedIssuer struct{}
+
+type PrivateACMIssuer struct {
+	AccessKeyIDRef          SecretKeySelector `json:"accessKeyIdRef"`
+	SecretAccessKeyRef      SecretKeySelector `json:"secretAccessKeyRef"`
+	CertificateAuthorityARN string            `json:"certificateAuthorityARN"`
+	Region                  string            `json:"region"`
+}
 
 type VaultIssuer struct {
 	// Vault authentication
