@@ -91,7 +91,7 @@ github.com/cpu/goacmedns
 github.com/davecgh/go-spew/spew
 # github.com/dgrijalva/jwt-go v0.0.0-20160705203006-01aeca54ebda
 github.com/dgrijalva/jwt-go
-# github.com/digitalocean/godo v1.6.0
+# github.com/digitalocean/godo v1.7.5
 github.com/digitalocean/godo
 # github.com/emicklei/go-restful v2.9.3+incompatible
 github.com/emicklei/go-restful
@@ -312,8 +312,6 @@ github.com/spf13/pflag
 # github.com/stretchr/testify v1.3.0
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
-# github.com/tent/http-link-go v0.0.0-20130702225549-ac974c61c2f9
-github.com/tent/http-link-go
 # go.opencensus.io v0.21.0
 go.opencensus.io/trace
 go.opencensus.io/plugin/ochttp
