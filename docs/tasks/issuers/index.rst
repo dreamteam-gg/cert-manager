@@ -43,6 +43,8 @@ types you require:
   configured with the `Vault PKI backend`_.
 * :doc:`Venafi <./setup-venafi>` - issue certificates from a Venafi_ Cloud
   or Trust Protection Platform instance.
+* :doc:`Private ACM <./setup-private-acm>` - issue certificates from a AWS ACM_
+  private CA.
 
 Additional information
 ======================
@@ -81,3 +83,4 @@ Certificate resources.
 .. _`Let's Encrypt`: https://letsencrypt.org
 .. _`Vault PKI backend`: https://www.vaultproject.io/docs/secrets/pki/index.html
 .. _Venafi: https://venafi.com
+.. _ACM: https://aws.amazon.com/certificate-manager/private-certificate-authority/

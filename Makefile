@@ -144,6 +144,7 @@ images:
 		--images \
 		--images.export=true \
 		--images.goarch="amd64" \
+		--images.export \
 		--app-version="$(APP_VERSION)" \
 		--docker-repo="$(DOCKER_REPO)"
 

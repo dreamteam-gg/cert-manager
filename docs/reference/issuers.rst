@@ -117,21 +117,23 @@ Supported Issuer types
 cert-manager has been designed to support pluggable Issuer backends. The
 currently supported Issuer types are:
 
-+------------------------------------------------------+----------------------------------------------------------------------+
-| Name                                                 | Description                                                          |
-+======================================================+======================================================================+
-| :doc:`ACME </tasks/issuers/setup-acme/index>`        | Supports obtaining certificates from an ACME server, validating with |
-|                                                      | HTTP01 or DNS01                                                      |
-+------------------------------------------------------+----------------------------------------------------------------------+
-| :doc:`CA </tasks/issuers/setup-ca>`                  | Supports issuing certificates using a simple signing keypair, stored |
-|                                                      | in a Secret in the Kubernetes API server                             |
-+------------------------------------------------------+----------------------------------------------------------------------+
-| :doc:`Vault </tasks/issuers/setup-vault>`            | Supports issuing certificates using HashiCorp Vault.                 |
-+------------------------------------------------------+----------------------------------------------------------------------+
-| :doc:`Self signed </tasks/issuers/setup-selfsigned>` | Supports issuing self signed certificates                            |
-+------------------------------------------------------+----------------------------------------------------------------------+
-| :doc:`Venafi </tasks/issuers/setup-venafi>`          | Supports issuing certificates from Venafi Cloud & TPP                |
-+------------------------------------------------------+----------------------------------------------------------------------+
++----------------------------------------------------------+----------------------------------------------------------------------+
+| Name                                                     | Description                                                          |
++==========================================================+======================================================================+
+| :doc:`ACME </tasks/issuers/setup-acme/index>`            | Supports obtaining certificates from an ACME server, validating with |
+|                                                          | HTTP01 or DNS01                                                      |
++----------------------------------------------------------+----------------------------------------------------------------------+
+| :doc:`CA </tasks/issuers/setup-ca>`                      | Supports issuing certificates using a simple signing keypair, stored |
+|                                                          | in a Secret in the Kubernetes API server                             |
++----------------------------------------------------------+----------------------------------------------------------------------+
+| :doc:`Vault </tasks/issuers/setup-vault>`                | Supports issuing certificates using HashiCorp Vault.                 |
++----------------------------------------------------------+----------------------------------------------------------------------+
+| :doc:`Self signed </tasks/issuers/setup-selfsigned>`     | Supports issuing self signed certificates                            |
++----------------------------------------------------------+----------------------------------------------------------------------+
+| :doc:`Venafi </tasks/issuers/setup-venafi>`              | Supports issuing certificates from Venafi Cloud & TPP                |
++----------------------------------------------------------+----------------------------------------------------------------------+
+| :doc:`AWS ACM Private CA </tasks/issuers/setup-private-acm>` | Supports issuing certificates from AWS ACM Private CA                |
++----------------------------------------------------------+----------------------------------------------------------------------+
 
 Each Issuer resource is of one, and only one type. The type of an Issuer is
 inferred by which field it specifies in its spec, such as ``spec.acme``
