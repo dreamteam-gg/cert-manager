@@ -2284,6 +2284,7 @@ Appears In:
 <td><code>PrivateACMIssuer</code></td>
 </tr>
 </tbody></table>
+<p>PrivateACMIssuer describes issuer configuration details for ACM Private CA</p>
 <aside class="notice">
 Appears In:
 
@@ -2300,19 +2301,19 @@ Appears In:
 </thead>
 <tbody><tr>
 <td><code>accessKeyIdRef</code><br /> *<a href="#secretkeyselector-v1alpha1">SecretKeySelector</a>*</td>
-<td></td>
+<td>AccessKeyIDRef is a reference to a Secret containing AWS Access Key ID</td>
 </tr>
 <tr>
 <td><code>certificateAuthorityARN</code><br /> <em>string</em></td>
-<td></td>
+<td>CertificateAuthorityARN is The Amazon Resource Name (ARN) of your private CA</td>
 </tr>
 <tr>
 <td><code>region</code><br /> <em>string</em></td>
-<td></td>
+<td>Region is AWS Region</td>
 </tr>
 <tr>
 <td><code>secretAccessKeyRef</code><br /> *<a href="#secretkeyselector-v1alpha1">SecretKeySelector</a>*</td>
-<td></td>
+<td>SecretAccessKeyRef is a reference to a Secret containing AWS Secret Access Key</td>
 </tr>
 </tbody></table>
 <h2 id="secretkeyselector-v1alpha1">SecretKeySelector v1alpha1</h2>
