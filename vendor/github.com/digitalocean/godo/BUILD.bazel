@@ -19,6 +19,7 @@ go_library(
         "image_actions.go",
         "images.go",
         "keys.go",
+        "kubernetes.go",
         "links.go",
         "load_balancers.go",
         "projects.go",
@@ -35,10 +36,7 @@ go_library(
     importpath = "github.com/digitalocean/godo",
     tags = ["manual"],
     visibility = ["//visibility:public"],
-    deps = [
-        "//vendor/github.com/google/go-querystring/query:go_default_library",
-        "//vendor/github.com/tent/http-link-go:go_default_library",
-    ],
+    deps = ["//vendor/github.com/google/go-querystring/query:go_default_library"],
 )
 
 filegroup(
