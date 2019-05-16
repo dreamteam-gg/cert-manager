@@ -82,6 +82,8 @@ Deploy that version with helm
    $ helm install \
         --set image.tag=canary \
         --set image.pullPolicy=Never \
+        --set webhook.enabled=false \
+        --set cainjector.enabled=false \
         --name cert-manager \
         ./deploy/charts/cert-manager
 

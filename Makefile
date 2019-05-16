@@ -143,6 +143,7 @@ images:
 		--repo-root "$$(pwd)" \
 		--images \
 		--images.goarch="amd64" \
+		--images.export \
 		--app-version="$(APP_VERSION)" \
 		--docker-repo="$(DOCKER_REPO)"
 
