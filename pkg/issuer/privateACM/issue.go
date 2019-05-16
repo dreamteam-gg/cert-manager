@@ -41,7 +41,7 @@ import (
 
 func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*issuer.IssueResponse, error) {
 	// get a copy of the existing/currently issued Certificate's private key
-	signeeKey, err := kube.SecretTLSKey(a.secretsLister, crt.Namespace, crt.Spec.SecretName)
+	signeeKey, err := kube.SecretTLSKey(ctx, a.secretsLister, crt.Namespace, crt.Spec.SecretName)
 	if k8sErrors.IsNotFound(err) || errors.IsInvalidData(err) {
 		// if one does not already exist, generate a new one
 		signeeKey, err = pki.GeneratePrivateKeyForCertificate(crt)

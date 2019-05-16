@@ -469,6 +469,51 @@ spec:
               required:
               - secretName
               type: object
+            privateACM:
+              properties:
+                accessKeyIdRef:
+                  description: AccessKeyIDRef is a reference to a Secret containing
+                    AWS Access Key ID
+                  properties:
+                    key:
+                      description: The key of the secret to select from. Must be a
+                        valid secret key.
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
+                      type: string
+                  required:
+                  - name
+                  type: object
+                certificateAuthorityARN:
+                  description: CertificateAuthorityARN is The Amazon Resource Name
+                    (ARN) of your private CA
+                  type: string
+                region:
+                  description: Region is AWS Region
+                  type: string
+                secretAccessKeyRef:
+                  description: SecretAccessKeyRef is a reference to a Secret containing
+                    AWS Secret Access Key
+                  properties:
+                    key:
+                      description: The key of the secret to select from. Must be a
+                        valid secret key.
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
+                      type: string
+                  required:
+                  - name
+                  type: object
+              required:
+              - certificateAuthorityARN
+              - accessKeyIdRef
+              - secretAccessKeyRef
+              - region
+              type: object
             selfSigned:
               type: object
             vault:
@@ -747,6 +792,51 @@ spec:
                   type: string
               required:
               - secretName
+              type: object
+            privateACM:
+              properties:
+                accessKeyIdRef:
+                  description: AccessKeyIDRef is a reference to a Secret containing
+                    AWS Access Key ID
+                  properties:
+                    key:
+                      description: The key of the secret to select from. Must be a
+                        valid secret key.
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
+                      type: string
+                  required:
+                  - name
+                  type: object
+                certificateAuthorityARN:
+                  description: CertificateAuthorityARN is The Amazon Resource Name
+                    (ARN) of your private CA
+                  type: string
+                region:
+                  description: Region is AWS Region
+                  type: string
+                secretAccessKeyRef:
+                  description: SecretAccessKeyRef is a reference to a Secret containing
+                    AWS Secret Access Key
+                  properties:
+                    key:
+                      description: The key of the secret to select from. Must be a
+                        valid secret key.
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
+                      type: string
+                  required:
+                  - name
+                  type: object
+              required:
+              - certificateAuthorityARN
+              - accessKeyIdRef
+              - secretAccessKeyRef
+              - region
               type: object
             selfSigned:
               type: object

@@ -145,11 +145,19 @@ type VenafiCloud struct {
 
 type SelfSignedIssuer struct{}
 
+// PrivateACMIssuer describes issuer configuration details for ACM Private CA
 type PrivateACMIssuer struct {
-	AccessKeyIDRef          SecretKeySelector `json:"accessKeyIdRef"`
-	SecretAccessKeyRef      SecretKeySelector `json:"secretAccessKeyRef"`
-	CertificateAuthorityARN string            `json:"certificateAuthorityARN"`
-	Region                  string            `json:"region"`
+	// CertificateAuthorityARN is The Amazon Resource Name (ARN) of your private CA
+	CertificateAuthorityARN string `json:"certificateAuthorityARN"`
+
+	// AccessKeyIDRef is a reference to a Secret containing AWS Access Key ID
+	AccessKeyIDRef SecretKeySelector `json:"accessKeyIdRef"`
+
+	// SecretAccessKeyRef is a reference to a Secret containing AWS Secret Access Key
+	SecretAccessKeyRef SecretKeySelector `json:"secretAccessKeyRef"`
+
+	// Region is AWS Region
+	Region string `json:"region"`
 }
 
 type VaultIssuer struct {
