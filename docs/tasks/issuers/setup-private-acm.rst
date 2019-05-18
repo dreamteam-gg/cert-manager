@@ -4,7 +4,7 @@ Setting up AWS ACM Private CA Issuers
 
 AWS ACM Private CA Issuer allows you to obraine certificate from AWS ACM_
 
-Create `Private CA`_ and get its ARN
+Create `Private CA`_ and get its ARN.
 
 Creating an Issuer resource
 ===========================
@@ -30,6 +30,31 @@ Once the secret has been created, you can create your Issuer or
 ClusterIssuer resource. If you are creating a ClusterIssuer resource, you must
 change the ``kind`` field to ``ClusterIssuer`` and remove the
 ``metadata.namespace`` field.
+
+You can also use standart credential chain to authenticate issuer: environments
+variables, ec2 metadata credentials (for example  via kiam_).
+
+Minimal AWS IAM policy that will allow issuer to do required actions:
+
+.. code-block:: shell
+
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "acm-pca:GetCertificate",
+           "acm-pca:GetCertificateAuthorityCertificate",
+           "acm-pca:IssueCertificate"
+         ],
+         "Resource": "arn:aws:acm:AWS_Region:AWS_Account:certificate/12345678-1234-1234-1234-123456789012"
+       }
+     ]
+   }
+
+Issuer
+------
 
 Apply below configuration to create ``Issuer``:
 
@@ -57,3 +82,4 @@ Issuer.
 
 .. _ACM: https://aws.amazon.com/certificate-manager/private-certificate-authority/
 .. _Private CA: https://console.aws.amazon.com/acm-pca/home#/certificateAuthorities
+.. _kiam: https://github.com/uswitch/kiam
