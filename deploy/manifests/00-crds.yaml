@@ -3644,9 +3644,6 @@ spec:
                   type: object
               required:
               - certificateAuthorityARN
-              - accessKeyIdRef
-              - secretAccessKeyRef
-              - region
               type: object
             selfSigned:
               type: object
@@ -5664,9 +5661,6 @@ spec:
                   type: object
               required:
               - certificateAuthorityARN
-              - accessKeyIdRef
-              - secretAccessKeyRef
-              - region
               type: object
             selfSigned:
               type: object

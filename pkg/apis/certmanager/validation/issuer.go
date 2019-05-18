@@ -181,22 +181,6 @@ func ValidateSelfSignedIssuerConfig(iss *v1alpha1.SelfSignedIssuer, fldPath *fie
 func ValidatePrivateACMIssuerConfig(iss *v1alpha1.PrivateACMIssuer, fldPath *field.Path) field.ErrorList {
 	el := field.ErrorList{}
 
-	if len(iss.AccessKeyIDRef.Name) == 0 {
-		el = append(el, field.Required(fldPath.Child("accessKeyIdRef", "name"), "access key id secret name is a required field"))
-	}
-
-	if len(iss.AccessKeyIDRef.Key) == 0 {
-		el = append(el, field.Required(fldPath.Child("accessKeyIdRef", "key"), "access key id secret key is a required field"))
-	}
-
-	if len(iss.SecretAccessKeyRef.Name) == 0 {
-		el = append(el, field.Required(fldPath.Child("secretAccessKeyRef", "name"), "secret key secret name is a required field"))
-	}
-
-	if len(iss.SecretAccessKeyRef.Key) == 0 {
-		el = append(el, field.Required(fldPath.Child("secretAccessKeyRef", "key"), "secret key secret key is a required field"))
-	}
-
 	if len(iss.CertificateAuthorityARN) == 0 {
 		el = append(el, field.Required(fldPath.Child("certificateAuthorityARN"), "certificate authority arn is a required field"))
 	}
