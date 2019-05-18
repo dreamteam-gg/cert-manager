@@ -151,13 +151,16 @@ type PrivateACMIssuer struct {
 	CertificateAuthorityARN string `json:"certificateAuthorityARN"`
 
 	// AccessKeyIDRef is a reference to a Secret containing AWS Access Key ID
-	AccessKeyIDRef SecretKeySelector `json:"accessKeyIdRef"`
+	// +optional
+	AccessKeyIDRef SecretKeySelector `json:"accessKeyIdRef,omitempty"`
 
 	// SecretAccessKeyRef is a reference to a Secret containing AWS Secret Access Key
-	SecretAccessKeyRef SecretKeySelector `json:"secretAccessKeyRef"`
+	// +optional
+	SecretAccessKeyRef SecretKeySelector `json:"secretAccessKeyRef,omitempty"`
 
 	// Region is AWS Region
-	Region string `json:"region"`
+	// +optional
+	Region string `json:"region,omitempty"`
 }
 
 type VaultIssuer struct {

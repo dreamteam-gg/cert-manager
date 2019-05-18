@@ -27,6 +27,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/defaults"
+	"github.com/aws/aws-sdk-go/aws/ec2metadata"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/acmpca"
 	"github.com/jetstack/cert-manager/pkg/apis/certmanager/v1alpha1"
@@ -70,19 +72,21 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 		return nil, err
 	}
 
-	csr, err := pki.GenerateCSR(a.issuer, crt)
+	/// BEGIN building CSR
+	// TODO: we should probably surface some of these errors to users
+	template, err := pki.GenerateCSR(a.issuer, crt)
 	if err != nil {
 		return nil, err
 	}
 
-	csrBytes, err := pki.EncodeCSR(csr, signeeKey)
+	derBytes, err := pki.EncodeCSR(template, signeeKey)
 	if err != nil {
 		return nil, err
 	}
 
-	var b bytes.Buffer
+	pemRequestBuf := &bytes.Buffer{}
 
-	err = pem.Encode(&b, &pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrBytes})
+	err = pem.Encode(pemRequestBuf, &pem.Block{Type: "CERTIFICATE REQUEST", Bytes: derBytes})
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +96,9 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 		a.Recorder.Eventf(crt, corev1.EventTypeWarning, "ErrorSigning", "Failed to request certificate: %v", err)
 		return nil, err
 	}
+	/// END building CSR
 
+	/// BEGIN requesting certificate
 	certDuration := v1alpha1.DefaultCertificateDuration
 	if crt.Spec.Duration != nil {
 		certDuration = crt.Spec.Duration.Duration
@@ -100,7 +106,7 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 
 	issueCertInput := &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(a.issuer.GetSpec().PrivateACM.CertificateAuthorityARN),
-		Csr:                     b.Bytes(),
+		Csr:                     pemRequestBuf.Bytes(),
 		IdempotencyToken:        aws.String(string(crt.UID)),
 		SigningAlgorithm:        aws.String(acmpca.SigningAlgorithmSha256withrsa), // TODO: make this configurable
 		Validity: &acmpca.Validity{
@@ -155,22 +161,60 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 }
 
 func (a *PrivateACM) initAWSPCAClient() (*acmpca.ACMPCA, error) {
-	accessKeyID, err := a.awsPCARef(a.issuer.GetSpec().PrivateACM.AccessKeyIDRef.Name, a.issuer.GetSpec().PrivateACM.AccessKeyIDRef.Key)
-	if err != nil {
-		return nil, err
+	var accessKeyID, secretKeyID string
+	var err error
+
+	if a.issuer.GetSpec().PrivateACM.AccessKeyIDRef.Name != "" {
+		accessKeyID, err = a.awsPCARef(a.issuer.GetSpec().PrivateACM.AccessKeyIDRef.Name, a.issuer.GetSpec().PrivateACM.AccessKeyIDRef.Key)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	secretKeyID, err := a.awsPCARef(a.issuer.GetSpec().PrivateACM.SecretAccessKeyRef.Name, a.issuer.GetSpec().PrivateACM.SecretAccessKeyRef.Key)
-	if err != nil {
-		return nil, err
+	if a.issuer.GetSpec().PrivateACM.SecretAccessKeyRef.Name != "" {
+		secretKeyID, err = a.awsPCARef(a.issuer.GetSpec().PrivateACM.SecretAccessKeyRef.Name, a.issuer.GetSpec().PrivateACM.SecretAccessKeyRef.Key)
+		if err != nil {
+			return nil, err
+		}
 	}
+
+	// Get the default cred chain
+	awsDefaults := defaults.Get()
+	defaultCredProviders := defaults.CredProviders(awsDefaults.Config, awsDefaults.Handlers)
+
+	// Define custom static cred provider
+	staticCreds := &credentials.StaticProvider{Value: credentials.Value{
+		AccessKeyID:     accessKeyID,
+		SecretAccessKey: secretKeyID,
+	}}
+
+	// Append static creds to the defaults
+	customCredProviders := append([]credentials.Provider{staticCreds}, defaultCredProviders...)
+	creds := credentials.NewChainCredentials(customCredProviders)
 
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String(a.issuer.GetSpec().PrivateACM.Region),
-		Credentials: credentials.NewStaticCredentials(accessKeyID, secretKeyID, ""),
+		Credentials: creds,
 	})
 	if err != nil {
 		return nil, err
+	}
+
+	// if no region was set try fetching it from metadata
+	if *sess.Config.Region == "" {
+		metaSession, err := session.NewSession()
+		if err != nil {
+			return nil, err
+		}
+
+		metaClient := ec2metadata.New(metaSession)
+		if metaClient.Available() {
+			if region, err := metaClient.Region(); err == nil {
+				sess.Config.Region = aws.String(region)
+			} else {
+				return nil, err
+			}
+		}
 	}
 
 	return acmpca.New(sess), nil
