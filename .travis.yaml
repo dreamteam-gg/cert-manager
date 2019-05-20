@@ -1,0 +1,40 @@
+dist: xenial
+sudo: true
+language: go
+
+go:
+  - 1.12.5
+
+go_import_path: github.com/jetstack/cert-manager
+
+install: true
+
+notifications:
+  email: false
+
+env:
+  # enforcing go mod in GOPATH
+  - GO111MODULE=on
+
+services:
+  - docker
+
+before_script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker --version
+
+script:
+  - make verify
+  - make images
+
+# calls goreleaser
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script:
+      - docker tag quay.io/jetstack/cert-manager-controller:canary quay.io/dreamteam/cert-manager-controller:$TRAVIS_TAG
+      - docker push quay.io/dreamteam/cert-manager-controller:$TRAVIS_TAG
+    on:
+      tags: true
+      all_branches: true
+      condition: $TRAVIS_OS_NAME = linux
