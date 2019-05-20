@@ -15,13 +15,21 @@ notifications:
 env:
   # enforcing go mod in GOPATH
   - GO111MODULE=on
+  - BAZEL_VERSION=0.25.2
 
 services:
   - docker
 
+before_install:
+  - |
+    URL="https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh"
+    wget -O install.sh "${URL}"
+    chmod +x install.sh
+    ./install.sh --user
+    rm -f install.sh
+
 before_script:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker --version
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin quay.io
 
 script:
   - make verify
