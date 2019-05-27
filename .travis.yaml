@@ -13,8 +13,6 @@ notifications:
   email: false
 
 env:
-  # enforcing go mod in GOPATH
-  - GO111MODULE=on
   - BAZEL_VERSION=0.25.2
 
 services:
@@ -35,7 +33,6 @@ script:
   - make verify
   - make images
 
-# calls goreleaser
 deploy:
   - provider: script
     skip_cleanup: true
