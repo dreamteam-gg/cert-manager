@@ -31,14 +31,24 @@ before_script:
 
 script:
   - make verify
-  - make images
+
+branches:
+  only:
+  - privateacm
+  - /^v.*$/
 
 deploy:
   - provider: script
     skip_cleanup: true
-    script:
-      - docker tag quay.io/jetstack/cert-manager-controller:canary quay.io/dreamteam/cert-manager-controller:$TRAVIS_TAG
-      - docker push quay.io/dreamteam/cert-manager-controller:$TRAVIS_TAG
+    script: >-
+      DOCKER_TAG=$TRAVIS_TAG bazel run //hack/release --
+      --repo-root "$TRAVIS_BUILD_DIR"
+      --images
+      --images.export
+      --images.components=controller
+      --publish
+      --app-version="$TRAVIS_TAG"
+      --docker-repo="quay.io/dreamteam"
     on:
       tags: true
       all_branches: true
