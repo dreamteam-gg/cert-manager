@@ -136,10 +136,6 @@ func ValidatePrivateACMIssuerConfig(iss *v1alpha1.PrivateACMIssuer, fldPath *fie
 		el = append(el, field.Required(fldPath.Child("certificateAuthorityARN"), "certificate authority arn is a required field"))
 	}
 
-	if len(iss.Region) == 0 {
-		el = append(el, field.Required(fldPath.Child("region"), "region is a required field"))
-	}
-
 	return el
 }
 
