@@ -90,7 +90,7 @@ func ValidateIssuerConfig(iss *v1alpha1.IssuerConfig, fldPath *field.Path) field
 			el = append(el, field.Forbidden(fldPath.Child("privateACM"), "may not specify more than one issuer type"))
 		} else {
 			numConfigs++
-			el = append(el, ValidatePrivateACMIssuerConfig(iss.PrivateACM, fldPath.Child("vault"))...)
+			el = append(el, ValidatePrivateACMIssuerConfig(iss.PrivateACM, fldPath.Child("privateACM"))...)
 		}
 	}
 	if numConfigs == 0 {
