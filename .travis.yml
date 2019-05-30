@@ -45,7 +45,7 @@ deploy:
       --repo-root "$TRAVIS_BUILD_DIR"
       --images
       --images.export
-      --images.components=controller
+      --images.components=controller,webhook
       --publish
       --app-version="$TRAVIS_TAG"
       --docker-repo="quay.io/dreamteam"
