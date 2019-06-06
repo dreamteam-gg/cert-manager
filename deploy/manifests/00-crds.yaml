@@ -78,6 +78,10 @@ spec:
             commonName:
               description: CommonName is a common name to be used on the Certificate
               type: string
+            disableTemporaryCrt:
+              description: DisableTemporaryCrt will disable issuing temporary selfsigned
+                certificate whilst issuing
+              type: boolean
             dnsNames:
               description: DNSNames is a list of subject alt names to be used on the
                 Certificate

@@ -91,6 +91,25 @@ After the real, valid certificate has been obtained, cert-manager will replace
 the temporary self signed certificate with the valid one, **but will retain the
 same private key**.
 
+You can disable issuing temporary certificate by setting ``disableTemporaryCrt``:
+
+.. code-block:: yaml
+   :linenos:
+   :emphasize-lines: 9
+
+   apiVersion: certmanager.k8s.io/v1alpha1
+   kind: Certificate
+   metadata:
+     name: example-com
+     namespace: default
+   spec:
+     secretName: example-com-tls
+     commonName: example.com
+     disableTemporaryCrt: true
+     issuerRef:
+       name: ca-issuer
+       kind: Issuer
+
 .. toctree::
    :maxdepth: 2
 

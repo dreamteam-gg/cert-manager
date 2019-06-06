@@ -118,6 +118,11 @@ type CertificateSpec struct {
 	// +kubebuilder:validation:Enum=rsa,ecdsa
 	// +optional
 	KeyAlgorithm KeyAlgorithm `json:"keyAlgorithm,omitempty"`
+
+	// DisableTemporaryCrt will disable issuing temporary selfsigned certificate
+	// whilst issuing
+	// +optional
+	DisableTemporaryCrt bool `json:"disableTemporaryCrt,omitempty"`
 }
 
 // ACMECertificateConfig contains the configuration for the ACME certificate provider

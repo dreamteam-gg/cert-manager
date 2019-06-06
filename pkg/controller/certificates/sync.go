@@ -376,6 +376,8 @@ func (c *Controller) updateSecret(ctx context.Context, crt *v1alpha1.Certificate
 		if err != nil {
 			return nil, fmt.Errorf("invalid certificate data: %v", err)
 		}
+	case crt.Spec.DisableTemporaryCrt:
+		break
 	case isTemporaryCertificate(existingCert):
 		matches, err := pki.PublicKeyMatchesCertificate(privKey.Public(), existingCert)
 		if err == nil && matches {
@@ -407,11 +409,13 @@ func (c *Controller) updateSecret(ctx context.Context, crt *v1alpha1.Certificate
 	// TODO: move metadata setting out of this method, and support
 	// retrospectively adding metadata annotations on every Sync iteration and
 	// not just when a new certificate is issued
-	secret.Annotations[v1alpha1.IssuerNameAnnotationKey] = crt.Spec.IssuerRef.Name
-	secret.Annotations[v1alpha1.IssuerKindAnnotationKey] = issuerKind(crt)
-	secret.Annotations[v1alpha1.CommonNameAnnotationKey] = x509Cert.Subject.CommonName
-	secret.Annotations[v1alpha1.AltNamesAnnotationKey] = strings.Join(x509Cert.DNSNames, ",")
-	secret.Annotations[v1alpha1.IPSANAnnotationKey] = strings.Join(pki.IPAddressesToString(x509Cert.IPAddresses), ",")
+	if x509Cert != nil {
+		secret.Annotations[v1alpha1.IssuerNameAnnotationKey] = crt.Spec.IssuerRef.Name
+		secret.Annotations[v1alpha1.IssuerKindAnnotationKey] = issuerKind(crt)
+		secret.Annotations[v1alpha1.CommonNameAnnotationKey] = x509Cert.Subject.CommonName
+		secret.Annotations[v1alpha1.AltNamesAnnotationKey] = strings.Join(x509Cert.DNSNames, ",")
+		secret.Annotations[v1alpha1.IPSANAnnotationKey] = strings.Join(pki.IPAddressesToString(x509Cert.IPAddresses), ",")
+	}
 
 	// Always set the certificate name label on the target secret
 	secret.Labels[v1alpha1.CertificateNameKey] = crt.Name

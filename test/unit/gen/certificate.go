@@ -118,3 +118,9 @@ func SetCertificateOrganization(orgs ...string) CertificateModifier {
 		ch.Spec.Organization = orgs
 	}
 }
+
+func SetDisableTemporaryCrt(disable bool) CertificateModifier {
+	return func(crt *v1alpha1.Certificate) {
+		crt.Spec.DisableTemporaryCrt = disable
+	}
+}
