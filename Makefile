@@ -14,7 +14,9 @@
 
 # Set DOCKER_REPO to customise the image docker repo, e.g. "quay.io/jetstack"
 DOCKER_REPO :=
+DOCKER_COMPONENTS ?= "controller,cainjector,acmesolver,webhook"
 APP_VERSION := canary
+TEST_NAMESPACE ?= cert-manager
 HACK_DIR ?= hack
 
 SKIP_GLOBALS := false
@@ -28,7 +30,7 @@ KUBECONFIG ?= $$HOME/.kube/config
 # Get a list of all binaries to be built
 CMDS := $(shell find ./cmd/ -maxdepth 1 -type d -exec basename {} \; | grep -v cmd)
 
-.PHONY: help build verify push $(CMDS) e2e_test images images_push \
+.PHONY: help build verify deploy push $(CMDS) e2e_test images images_push \
 	verify_lint verify_unit verify_deps verify_codegen verify_docs verify_chart \
 
 help:
@@ -144,6 +146,7 @@ images:
 		--images \
 		--images.goarch="amd64" \
 		--images.export \
+		--images.components=$(DOCKER_COMPONENTS) \
 		--app-version="$(APP_VERSION)" \
 		--docker-repo="$(DOCKER_REPO)"
 
@@ -154,3 +157,19 @@ images_push: images
 		--publish \
 		--app-version="$(APP_VERSION)" \
 		--docker-repo="$(DOCKER_REPO)"
+
+# Deploy to test cluster
+########################
+deploy:
+	kubectl apply -f deploy/manifests/00-crds.yaml
+	kubectl label namespace $(TEST_NAMESPACE) certmanager.k8s.io/disable-validation="true" --overwrite
+	helm upgrade --install \
+	  --namespace $(TEST_NAMESPACE) \
+		--set image.tag=canary \
+		--set image.pullPolicy=Never \
+		--set cainjector.image.tag=canary \
+		--set cainjector.pullPolicy=Never \
+		--set webhook.image.tag=canary \
+		--set webhook.pullPolicy=Never \
+		cert-manager \
+		./deploy/charts/cert-manager
