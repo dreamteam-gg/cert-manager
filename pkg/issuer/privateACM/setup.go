@@ -25,11 +25,12 @@ import (
 )
 
 const (
-	errorPrivateACM                 = "PrivateACMError"
-	messagePrivateACMConfigRequired = "Private ACM config cannot be empty"
-	messageCertAuthorityARNRequired = "Certificate Authority ARN cannot be empty"
-	successPrivateACMVerified       = "KeyPairVerified"
-	messagePrivateACMVerified       = "Private ACM Verified"
+	errorPrivateACM                   = "PrivateACMError"
+	messagePrivateACMConfigRequired   = "Private ACM config cannot be empty"
+	messageCertAuthorityARNRequired   = "Certificate Authority ARN cannot be empty"
+	messagePrivateACMClientInitFailed = "Failed to initialize PrivateACM client: "
+	successPrivateACMVerified         = "KeyPairVerified"
+	messagePrivateACMVerified         = "Private ACM Verified"
 )
 
 func (acm *PrivateACM) Setup(ctx context.Context) error {
@@ -43,6 +44,14 @@ func (acm *PrivateACM) Setup(ctx context.Context) error {
 		klog.Infof("%s: %s", acm.issuer.GetObjectMeta().Name, messageCertAuthorityARNRequired)
 		apiutil.SetIssuerCondition(acm.issuer, v1alpha1.IssuerConditionReady, v1alpha1.ConditionFalse, errorPrivateACM, messageCertAuthorityARNRequired)
 		return nil
+	}
+
+	_, err := acm.initAWSPCAClient()
+	if err != nil {
+		s := messagePrivateACMClientInitFailed + err.Error()
+		klog.V(4).Infof("%s: %s", acm.issuer.GetObjectMeta().Name, s)
+		apiutil.SetIssuerCondition(acm.issuer, v1alpha1.IssuerConditionReady, v1alpha1.ConditionFalse, errorPrivateACM, s)
+		return err
 	}
 
 	klog.Info(successPrivateACMVerified)
