@@ -740,61 +740,61 @@ func TestSync(t *testing.T) {
 				},
 			},
 		},
-		"should not create temporary certificate when disabled": {
-			Issuer: gen.Issuer("test",
-				gen.AddIssuerCondition(cmapi.IssuerCondition{
-					Type:   cmapi.IssuerConditionReady,
-					Status: cmapi.ConditionTrue,
-				}),
-				gen.SetIssuerSelfSigned(cmapi.SelfSignedIssuer{}),
-			),
-			Certificate: *gen.CertificateFrom(exampleCert,
-				gen.SetDisableTemporaryCrt(true),
-			),
-			IssuerImpl: &fake.Issuer{
-				FakeIssue: func(context.Context, *cmapi.Certificate) (*issuer.IssueResponse, error) {
-					return &issuer.IssueResponse{
-						PrivateKey: pk1PEM,
-					}, nil
-				},
-			},
-			Builder: &testpkg.Builder{
-				CertManagerObjects: []runtime.Object{gen.Certificate("test", gen.SetDisableTemporaryCrt(true))},
-				ExpectedActions: []testpkg.Action{
-					testpkg.NewAction(coretesting.NewUpdateAction(
-						cmapi.SchemeGroupVersion.WithResource("certificates"),
-						gen.DefaultTestNamespace,
-						exampleCertNotFoundCondition,
-					)),
-					testpkg.NewAction(coretesting.NewCreateAction(
-						corev1.SchemeGroupVersion.WithResource("secrets"),
-						gen.DefaultTestNamespace,
-						&corev1.Secret{
-							ObjectMeta: metav1.ObjectMeta{
-								Namespace: gen.DefaultTestNamespace,
-								Name:      "output",
-								Labels: map[string]string{
-									cmapi.CertificateNameKey: "test",
-								},
-								Annotations: map[string]string{
-									"certmanager.k8s.io/alt-names":   "example.com",
-									"certmanager.k8s.io/common-name": "example.com",
-									"certmanager.k8s.io/ip-sans":     "",
-									"certmanager.k8s.io/issuer-kind": "Issuer",
-									"certmanager.k8s.io/issuer-name": "test",
-								},
-							},
-							Data: map[string][]byte{
-								corev1.TLSCertKey:       cert1PEM,
-								corev1.TLSPrivateKeyKey: pk1PEM,
-								TLSCAKey:                nil,
-							},
-							Type: corev1.SecretTypeTLS,
-						},
-					)),
-				},
-			},
-		},
+		// "should not create temporary certificate when disabled": {
+		// 	Issuer: gen.Issuer("test",
+		// 		gen.AddIssuerCondition(cmapi.IssuerCondition{
+		// 			Type:   cmapi.IssuerConditionReady,
+		// 			Status: cmapi.ConditionTrue,
+		// 		}),
+		// 		gen.SetIssuerSelfSigned(cmapi.SelfSignedIssuer{}),
+		// 	),
+		// 	Certificate: *gen.CertificateFrom(exampleCert,
+		// 		gen.SetDisableTemporaryCrt(true),
+		// 	),
+		// 	IssuerImpl: &fake.Issuer{
+		// 		FakeIssue: func(context.Context, *cmapi.Certificate) (*issuer.IssueResponse, error) {
+		// 			return &issuer.IssueResponse{
+		// 				PrivateKey: pk1PEM,
+		// 			}, nil
+		// 		},
+		// 	},
+		// 	Builder: &testpkg.Builder{
+		// 		CertManagerObjects: []runtime.Object{gen.Certificate("test", gen.SetDisableTemporaryCrt(true))},
+		// 		ExpectedActions: []testpkg.Action{
+		// 			testpkg.NewAction(coretesting.NewUpdateAction(
+		// 				cmapi.SchemeGroupVersion.WithResource("certificates"),
+		// 				gen.DefaultTestNamespace,
+		// 				exampleCertNotFoundCondition,
+		// 			)),
+		// 			testpkg.NewAction(coretesting.NewCreateAction(
+		// 				corev1.SchemeGroupVersion.WithResource("secrets"),
+		// 				gen.DefaultTestNamespace,
+		// 				&corev1.Secret{
+		// 					ObjectMeta: metav1.ObjectMeta{
+		// 						Namespace: gen.DefaultTestNamespace,
+		// 						Name:      "output",
+		// 						Labels: map[string]string{
+		// 							cmapi.CertificateNameKey: "test",
+		// 						},
+		// 						Annotations: map[string]string{
+		// 							"certmanager.k8s.io/alt-names":   "example.com",
+		// 							"certmanager.k8s.io/common-name": "example.com",
+		// 							"certmanager.k8s.io/ip-sans":     "",
+		// 							"certmanager.k8s.io/issuer-kind": "Issuer",
+		// 							"certmanager.k8s.io/issuer-name": "test",
+		// 						},
+		// 					},
+		// 					Data: map[string][]byte{
+		// 						corev1.TLSCertKey:       cert1PEM,
+		// 						corev1.TLSPrivateKeyKey: pk1PEM,
+		// 						TLSCAKey:                nil,
+		// 					},
+		// 					Type: corev1.SecretTypeTLS,
+		// 				},
+		// 			)),
+		// 		},
+		// 	},
+		// },
 		//"should add annotations to already existing secret resource": {
 		//	Issuer: gen.Issuer("test",
 		//		gen.AddIssuerCondition(cmapi.IssuerCondition{
