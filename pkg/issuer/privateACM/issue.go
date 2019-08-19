@@ -57,7 +57,7 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 		klog.V(4).Infof("Storing new certificate private key for %s/%s", crt.Namespace, crt.Name)
 		a.Recorder.Eventf(crt, corev1.EventTypeNormal, "Generated", "Generated new private key")
 
-		keyPem, err := pki.EncodePrivateKey(signeeKey)
+		keyPem, err := pki.EncodePrivateKey(signeeKey, crt.Spec.KeyEncoding)
 		if err != nil {
 			return nil, err
 		}
@@ -138,7 +138,7 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 	certificate := []byte(*certOutput.Certificate)
 
 	// Encode output private key and CA cert ready for return
-	keyPem, err := pki.EncodePrivateKey(signeeKey)
+	keyPem, err := pki.EncodePrivateKey(signeeKey, crt.Spec.KeyEncoding)
 	if err != nil {
 		a.Recorder.Eventf(crt, corev1.EventTypeWarning, "ErrorPrivateKey", "Error encoding private key: %v", err)
 		return nil, err
