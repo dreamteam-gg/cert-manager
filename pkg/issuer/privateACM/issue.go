@@ -74,7 +74,7 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 
 	/// BEGIN building CSR
 	// TODO: we should probably surface some of these errors to users
-	template, err := pki.GenerateCSR(a.issuer, crt)
+	template, err := pki.GenerateCSR(crt)
 	if err != nil {
 		return nil, err
 	}
