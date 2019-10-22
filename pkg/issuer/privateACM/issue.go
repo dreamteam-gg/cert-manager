@@ -151,7 +151,7 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 		klog.Errorf("Error getting PCA Certificate: %v", err)
 		return nil, err
 	}
-	caCertificate := []byte(fmt.Sprintf("%s%s", *caCertificateOutput.Certificate, *caCertificateOutput.CertificateChain))
+	caCertificate := []byte(fmt.Sprintf("%s\n%s\n", *caCertificateOutput.Certificate, *caCertificateOutput.CertificateChain))
 
 	return &issuer.IssueResponse{
 		PrivateKey:  keyPem,
