@@ -75,7 +75,6 @@ push: docker_push
 verify_lint:
 	bazel test \
 		//hack:verify-boilerplate \
-		//hack:verify-links \
 		//hack:verify-errexit \
 		//hack:verify-gofmt
 
