@@ -627,6 +627,7 @@ func (c *certificateRequestManager) updateSecretData(ctx context.Context, crt *c
 	}
 
 	newSecret := s.DeepCopy()
+	fmt.Println(data.ca)
 	err := setSecretValues(ctx, crt, newSecret, secretData{pk: data.pk, cert: data.cert, ca: data.ca})
 	if err != nil {
 		return false, err

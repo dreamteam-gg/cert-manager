@@ -106,9 +106,9 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 
 	issueCertInput := &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(a.issuer.GetSpec().PrivateACM.CertificateAuthorityARN),
-		Csr:                     pemRequestBuf.Bytes(),
-		IdempotencyToken:        aws.String(string(crt.UID)),
-		SigningAlgorithm:        aws.String(acmpca.SigningAlgorithmSha256withrsa), // TODO: make this configurable
+		Csr:              pemRequestBuf.Bytes(),
+		IdempotencyToken: aws.String(string(crt.UID)),
+		SigningAlgorithm: aws.String(acmpca.SigningAlgorithmSha256withrsa), // TODO: make this configurable
 		Validity: &acmpca.Validity{
 			Type:  aws.String("DAYS"),
 			Value: aws.Int64(int64(math.Ceil(certDuration.Hours() / 24))),
@@ -152,7 +152,8 @@ func (a *PrivateACM) Issue(ctx context.Context, crt *v1alpha1.Certificate) (*iss
 		return nil, err
 	}
 	caCertificate := []byte(fmt.Sprintf("%s\n%s", *caCertificateOutput.Certificate, *caCertificateOutput.CertificateChain))
-
+	fmt.Println(fmt.Sprintf("%s\n%s", *caCertificateOutput.Certificate, *caCertificateOutput.CertificateChain))
+	fmt.Println(len(caCertificate))
 	return &issuer.IssueResponse{
 		PrivateKey:  keyPem,
 		Certificate: certificate,

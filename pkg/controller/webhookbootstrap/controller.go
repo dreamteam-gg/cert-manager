@@ -20,6 +20,7 @@ import (
 	"context"
 	"crypto"
 	"crypto/x509"
+	"fmt"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -372,6 +373,8 @@ func (c *controller) updateSecret(secret *corev1.Secret, pk, ca, crt []byte) err
 	}
 	secret.Data[corev1.TLSPrivateKeyKey] = pk
 	secret.Data[corev1.TLSCertKey] = crt
+	fmt.Println("updateSecret")
+	fmt.Println(string(ca))
 	secret.Data[cmapi.TLSCAKey] = ca
 	_, err := c.kubeClient.CoreV1().Secrets(secret.Namespace).Update(secret)
 	return err
